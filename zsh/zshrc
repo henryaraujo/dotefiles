@@ -1,0 +1,68 @@
+source "$HOME/custom.zsh-theme"
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+
+if [ ! -d "$ZINIT_HOME" ]; then
+   mkdir -p "$(dirname $ZINIT_HOME)"
+   git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+fi
+
+source "${ZINIT_HOME}/zinit.zsh"
+
+# powerlevel10k
+# zinit ice depth=1; zinit light romkatv/powerlevel10k
+
+#zsh plugins
+#zinit ice turbo; zinit light zsh-users/zsh-syntax-highlighting
+zinit ice turbo; zinit light zsh-users/zsh-completions
+zinit ice turbo; zinit light zsh-users/zsh-autosuggestions
+
+#completions
+# autoload -Uz compinit && compinit
+autoload -Uz compinit 
+
+if [[ -n "${ZCOMP_CACHE}"(#qN.mh+24) ]]; then
+    compinit -d "${ZCOMP_CACHE}"
+else
+    compinit -C
+fi
+
+# keybindings
+bindkey -e
+
+# history
+HISTSIZE=5000
+HISTFILE=~/.zsh_history
+SAVEHIST=$HISTSIZE
+HISTDUP=erase
+setopt appendhistory
+setopt sharehistory
+setopt hist_ignore_space
+setopt hist_ignore_all_dups
+setopt hist_save_no_dups
+setopt hist_ignore_dups
+setopt hist_find_no_dups
+
+# completion styling
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+
+export PATH="/opt/nvim-linux64/bin:$PATH"
+# aliases
+alias ls='ls --color'
+alias cat="batcat"
+alias vim='nvim'
+alias c='clear'
+
+
+#nvm configuration
+export PATH="/opt/nvim-linux64/bin:$PATH"
+export PATH="/usr/local/go/bin:$PATH"
+export CLASSPATH=".:/usr/local/lib/antlr-4.13.2-complete.jar:$CLASSPATH"
+alias antlr4='java -Xmx500M -cp "/usr/local/lib/antlr-4.13.2-complete.jar:$CLASSPATH" org.antlr.v4.Tool'
+
+# bun completions
+[ -s "/home/luizaraujo/.bun/_bun" ] && source "/home/luizaraujo/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
