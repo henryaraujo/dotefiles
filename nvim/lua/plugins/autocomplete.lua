@@ -1,6 +1,7 @@
 return {
   'hrsh7th/nvim-cmp',
   event = 'InsertEnter',
+  enable = true,
   dependencies = {
     -- Snippet Engine & its associated nvim-cmp source
     'saadparwaiz1/cmp_luasnip',

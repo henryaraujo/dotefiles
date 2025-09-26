@@ -57,7 +57,8 @@ map('n', '<C-l>', ':vertical resize +2<CR>', opts)
 
 -- Opens a new terminal in vertical split
 -- map('n', '<leader>b', ':term<CR>', opts)
-map('n', '<leader>b', ':split | terminal<CR>', opts)
+-- map('n', '<leader>b', ':split | terminal<CR>', opts)
+map('n', '<leader>ft', ':Floaterminal<CR>', opts)
 map('t', '<leader>n', '<C-\\><C-n>', opts)
 
 -- EASY CAPS - Shift + u = upper case, u = lower case

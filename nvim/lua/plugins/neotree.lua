@@ -17,6 +17,9 @@ return {
 					enable = true,
 					leave_dirs_open = true,
 				},
+        filtered_items = {
+          hide_hidden = false
+        }
 			},
 		})
 

@@ -1,6 +1,8 @@
 return {
   'nvim-treesitter/nvim-treesitter',
+  lazy = true,
   build = ':TSUpdate',
+  event = { "BufReadPre", "BufNewFile" },
   -- main = 'nvim-treesitter.configs', -- Sets main module to use for opts
   -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
   opts = {
@@ -17,5 +19,6 @@ return {
     highlight = {
       enable = true,
     },
+    indent = { enable = true }
   },
 }

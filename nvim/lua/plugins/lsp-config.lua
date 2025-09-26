@@ -6,17 +6,17 @@ local servers = {
   "angularls",
   "emmet_ls",
   "gopls"
-  -- "powershell_es"
 }
 
-local capabilities = require('cmp_nvim_lsp').default_capabilities()
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
 return {
   {
     "williamboman/mason.nvim",
     config = function()
       require("mason").setup()
-    end
+    end,
   },
   {
     "williamboman/mason-lspconfig.nvim",
@@ -24,72 +24,66 @@ return {
       require("mason-lspconfig").setup({
         ensure_installed = servers,
         automatic_installation = true,
-        handlers = {
-          function(server_name)
-            require("lspconfig")[server_name].setup {
-              capabilities = capabilities
-            }
-          end,
-        },
       })
-    end
+    end,
   },
   {
     "neovim/nvim-lspconfig",
     config = function()
-      local lspconfig = require("lspconfig")
-
-      lspconfig.lua_ls.setup({
+      -- Configurações específicas dos servidores como tabelas:
+      vim.lsp.config.lua_ls = {
+        capabilities = capabilities,
         settings = {
           Lua = {
             diagnostics = {
-              globals = { 'vim' }
-            }
-          }
-        }
-      })
+              globals = { "vim" },
+            },
+          },
+        },
+      }
 
-      lspconfig.ts_ls.setup({
+      vim.lsp.config.ts_ls = {
         capabilities = capabilities,
         cmd = { "typescript-language-server.cmd", "--stdio" },
-      })
+      }
 
-      lspconfig.angularls.setup({
+      vim.lsp.config.angularls = {
         capabilities = capabilities,
         cmd = { "ngserver.cmd", "--stdio" },
-        root_dir = lspconfig.util.root_pattern("angular.json")
-      })
+        root_dir = require("lspconfig.util").root_pattern("angular.json"),
+      }
 
-      lspconfig.html.setup({
+      vim.lsp.config.html = {
         capabilities = capabilities,
-        -- cmd = { "html-languageserver.cmd", "--stdio" }
-      })
-      lspconfig.cssls.setup({
-        capabilities = capabilities,
-        -- cmd = { "css-languageserver.cmd", "--stdio" }
-      })
-      lspconfig.emmet_ls.setup({
-        filetypes = { "html", "css" }
-      })
+      }
 
-      lspconfig.gopls.setup({
+      vim.lsp.config.cssls = {
         capabilities = capabilities,
-      })
-      -- lspconfig.powershell_es.setup({
-      --   cmd = { "../../../nvim-data/mason/packages/powershell-editor-services/PowerShellEditorServices/Start-EditorServices.ps1" },
-      --   capabilities = capabilities,
+      }
+
+      vim.lsp.config.emmet_ls = {
+        capabilities = capabilities,
+        filetypes = { "html", "css" },
+      }
+
+      vim.lsp.config.gopls = {
+        capabilities = capabilities,
+      }
+
+      -- Ativa os servidores configurados
+      vim.lsp.enable(servers)
+
+      -- Mapeamento para hover
+      vim.keymap.set("n", "K", vim.lsp.buf.hover, { noremap = true, silent = true })
+
+      -- Para outras keymaps, considerar usar evento LspAttach para configurar por servidor
+      -- vim.api.nvim_create_autocmd("LspAttach", {
+      --   callback = function(args)
+      --     local buf = args.buf
+      --     local client = vim.lsp.get_client_by_id(args.data.client_id)
+      --     -- Map keys por buffer aqui
+      --   end,
       -- })
-      --[[ for _, server in ipairs(servers) do
-				lspconfig[server].setup {}
-			end ]]
-
-      -- Mapeamento de teclas para hover
-      vim.keymap.set('n', 'K', vim.lsp.buf.hover, { noremap = true, silent = true })
-      -- vim.keymap.set('n', 'gd', '<cmd>tab split | lua vim.lsp.buf.definition()<CR>', { noremap = true, silent = true })
-      -- vim.keymap.set('n', 'gi', '<cmd>tab split | lua vim.lsp.buf.implementation()<CR>',
-      --   { noremap = true, silent = true })
-      -- vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, { noremap = true, silent = true })
-      -- vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { noremap = true, silent = true })
-    end
-  }
+    end,
+  },
 }
